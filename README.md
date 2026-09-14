@@ -1,74 +1,35 @@
 # FAKA Overnight
 
-Max-SNR unattended coding supervisor for **Pi + Ralph + local LLMs**.
+Max-SNR unattended coding supervisor for Pi + Ralph + local LLMs.
 
-The goal is not one giant context. The goal is repeated fresh coding contexts with durable state in the repository:
-
-```text
-SPEC → fresh Pi worker → code/test → checkpoint → fresh worker → ... → acceptance PASS
-```
-
-## One-line install into the current project
+## Install once in a project
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/IFAKA/faka-overnight/main/install.sh | bash
 ```
 
-The installer:
-
-1. validates Node.js >= 22.22.1,
-2. installs/updates `@earendil-works/pi-coding-agent@0.85.1`,
-3. installs `@lnilluv/pi-ralph-loop`,
-4. initializes local Git if needed,
-5. installs `.faka/` into the current directory,
-6. preserves an existing `SPEC.md` / plan / open-questions state on reinstall,
-7. does **not** overwrite your existing Pi provider credentials or model configuration.
-
-Then:
+Then simply:
 
 ```bash
-$EDITOR .faka/task/SPEC.md
-.faka/overnight.sh
+pi
 ```
 
-## Existing local OpenAI-compatible backend
+Use Pi normally. For ordinary tasks FAKA stays out of the way.
 
-Default health endpoint:
+For a long-running autonomous campaign, say naturally:
 
 ```text
-http://127.0.0.1:8000/v1/models
+finish this project while I sleep
 ```
 
-Override:
+The attached Pi extension starts the Ralph supervisor in the background. No duplicate manual SPEC is required when the repository already has README/AGENTS/CLAUDE/docs/tests that define the target.
+
+FAKA persists the current user goal, uses fresh Pi/Ralph worker contexts, keeps durable state in the repo/filesystem, and treats `.faka/verify.sh` as the external acceptance gate.
+
+You can still launch directly:
 
 ```bash
-FAKA_BACKEND_URL=http://127.0.0.1:8080/v1 .faka/overnight.sh
+.faka/overnight.sh "finish this project according to existing requirements"
 ```
 
-For automatic backend recovery:
-
-```bash
-export FAKA_BACKEND_START='your model server start command'
-.faka/overnight.sh
-```
-
-## What persists between fresh contexts?
-
-- source code and tests
-- Git history
-- `.faka/task/SPEC.md`
-- `.faka/task/IMPLEMENTATION_PLAN.md`
-- `.faka/task/OPEN_QUESTIONS.md`
-- Ralph's rolling progress/run state
-
-Full historical chat context is deliberately **not** carried forever.
-
-## Completion
-
-The model's claim that it is done is insufficient. The Ralph completion gate reruns `.faka/verify.sh`.
-
-Edit that verifier to encode the actual project acceptance boundary, including E2E tests when appropriate.
-
-## Safety
-
-Pi packages/extensions execute with system access. Review code before using an unattended package. For high-autonomy overnight runs, prefer a disposable worktree/container/VM and keep secrets outside writable project state.
+On first `pi` launch, Pi may ask you to trust the project because `.pi/extensions/faka.ts` is project-local. After trust, it loads automatically.

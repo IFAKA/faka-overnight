@@ -47,12 +47,13 @@ ROOT="$(find "$TMP/unpack" -mindepth 1 -maxdepth 1 -type d | head -n 1)"
 [ -n "$ROOT" ] || die "Downloaded archive was empty"
 
 DEST="$PROJECT/.faka"
-mkdir -p "$DEST/task" "$DEST/logs"
+mkdir -p "$DEST/task" "$DEST/logs" "$PROJECT/.pi/extensions"
 
 for f in overnight.sh verify.sh watchdog.py run_with_timeout.py; do
   cp "$ROOT/$f" "$DEST/$f"
 done
 cp "$ROOT/task/RALPH.md" "$DEST/task/RALPH.md"
+cp "$ROOT/faka-extension.ts" "$PROJECT/.pi/extensions/faka.ts"
 
 # Preserve user-edited project state on reinstall.
 for f in SPEC.md IMPLEMENTATION_PLAN.md OPEN_QUESTIONS.md; do
@@ -65,16 +66,16 @@ chmod +x "$DEST/overnight.sh" "$DEST/verify.sh" "$DEST/watchdog.py" "$DEST/run_w
 
 # Ignore runtime state without clobbering the project's existing .gitignore.
 touch "$PROJECT/.gitignore"
-for rule in ".faka/logs/" ".faka/watchdog.jsonl" ".faka/backend.stdout.log" ".faka/backend.stderr.log" ".faka/task/.ralph-runner/"; do
+for rule in ".faka/" ".pi/extensions/faka.ts"; do
   grep -qxF "$rule" "$PROJECT/.gitignore" || printf '%s\n' "$rule" >> "$PROJECT/.gitignore"
 done
 
 say "Installed."
 printf '\n'
-printf 'Next:\n'
-printf '  1. Edit .faka/task/SPEC.md\n'
-printf '  2. Verify .faka/verify.sh matches your project\n'
-printf '  3. Run: .faka/overnight.sh\n'
+printf 'Ready.\n'
+printf 'Run: pi\n'
+printf 'Then just describe the task normally.\n'
+printf 'For unattended work say e.g. \"finish this project while I sleep\".\n'
 printf '\n'
 printf 'Ralph: '
 if pi list 2>/dev/null | grep -q '@lnilluv/pi-ralph-loop'; then
