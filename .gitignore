@@ -1,0 +1,5 @@
+logs/
+watchdog.jsonl
+backend.stdout.log
+backend.stderr.log
+task/.ralph-runner/
